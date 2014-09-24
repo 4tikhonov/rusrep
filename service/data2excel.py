@@ -13,6 +13,22 @@ import getopt
 import xlsxwriter
 import ConfigParser
 
+# Find configuration
+def walkpath (name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+def findconfig(configfile):
+    #configfile = 'russianrep.config'
+    basedir = '/etc/apache2'
+
+    if os.path.isfile(basedir + '/' + configfile):
+         filename = basedir + '/' + configfile
+    else:
+         filename = walkpath(configfile, '../../../')
+    return filename
+
 # Reading parameters
 def read_params():
 	year = 0
@@ -56,7 +72,7 @@ def read_params():
 def load_data(year, datatype, region, copyrights, debug):
         #Define connection to database from default configuration file 
         cparser = ConfigParser.RawConfigParser()
-        cpath = "/etc/apache2/rusrep.config"
+        cpath = findconfig('russianrep.config');
         cparser.read(cpath)
 
         conn_string = "host='%s' dbname='%s' user='%s' password='%s'" % (cparser.get('config', 'dbhost'), cparser.get('config', 'dbname'), cparser.get('config', 'dblogin'), cparser.get('config', 'dbpassword'))
