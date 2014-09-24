@@ -27,6 +27,7 @@ $introrus = $dbconfig{intro_rus};
 $data2excel = $dbconfig{data2excel};
 $scriptdir = $dbconfig{scriptdir};
 $workpath = $dbconfig{workpath};
+$imgpath = "/sites/all/themes/ristat/images";
 $checkicon = $dbconfig{checkicon};
 $note = $dbconfig{note};
 $note_rus = $dbconfig{note_rus};
@@ -263,14 +264,14 @@ sub readtopics
 		if ($selectedyears{$year})
 		{
 		     # Showyear management 
-		     my $showyear = "<img width=20 height=20 src=\"/$checkicon\">";
+		     my $showyear = "<img width=20 height=20 src=\"$imgpath/$checkicon\">";
 		     $showyear = "<input type=checkbox name=\"datatype-$datatype-$year\">" unless ($datapage);
 		     $url = "?topic=$topic_id&d=$datatype";
 		     $htmltopic.="<td width=\"5%\" align=\"center\">$showyear</td>" unless ($nohtml{$datatype});
 		}
 		else
 		{
-		    $htmltopic.= "<td width=\"5%\" align=\"center\"><img width=20 height=20 src=\"/absent.jpg\"></td>" unless ($nohtml{$datatype});
+		    $htmltopic.= "<td width=\"5%\" align=\"center\"><img width=20 height=20 src=\"$imgpath/absent.jpg\"></td>" unless ($nohtml{$datatype});
 		}
 	        }
 	    }
