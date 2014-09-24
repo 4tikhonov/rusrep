@@ -96,7 +96,9 @@ def load_data(year, datatype, region, copyrights, debug):
 	    query += " AND territory = '%s'" % region
         if debug:
 	    print query + " TEST <br>\n"
-	query += ' order by ter_code asc limit 65530'
+	# In Excel 2003, the maximum worksheet size is 65536 rows by 256 columns
+	# this should be improved in further version
+	query += ' order by ter_code asc limit 65535'
 
 	# execute
         cursor.execute(query)
