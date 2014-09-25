@@ -180,7 +180,7 @@ sub readtopics
     }
     $yearslist=~s/\,\s+$//g;
 
-    $sqlquery = "select year, datatype, count(*) as count from russianrepository where year in ($yearslist) group by year, datatype";
+    $sqlquery = "select base_year, datatype, count(*) as count from russianrepository where base_year in ($yearslist) group by base_year, datatype";
     my $sth = $dbh->prepare("$sqlquery");
     $sth->execute();
 
