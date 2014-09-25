@@ -20,6 +20,7 @@ $htmltemplate = "$Bin/../templates/countries.tpl";
 
 my %dbconfig = loadconfig("$Bin/../config/russianrep.config");
 $site = $dbconfig{root};
+$drupal_files = $dbconfig{drupal_files};
 $introtext = $dbconfig{intro};
 $introrus = $dbconfig{intro_rus};
 $data2excel = $dbconfig{data2excel};
@@ -50,6 +51,7 @@ my $path_date = sprintf("%04d%02d%02d.%02d%02d%02d", $time[5]+1900, $time[4]+1, 
 my $edit_date = $create_date;
 
 $path = $workpath;
+$path.="/" unless ($path=~/\/$/);
 $path.="$path_date";
 
 use Getopt::Long;
@@ -219,7 +221,7 @@ sub readtopics
 
 	    if (keys %data)
 	    {
-	        $datalinks.= "<a href=\"/tmp/dataset.$datatype.xls\">Excel for $topic_name</a> $datatype $path<br>";
+	        $datalinks.= "<a href=\"$drupal_files/dataset.$datatype.xls\">Excel for $topic_name</a> $datatype $path<br>";
 	        $datafile = `$data2excel -y $thisyear -d $datatype -f $filename -p $path -c '$introtext' -D `;
 		print "DEBUG $data2excel -y $thisyear -d $datatype -f $filename -p $path -D<br>" if ($DEBUG);
 		push(@datafiles, $datafile);
@@ -301,7 +303,7 @@ sub readtopics
     $ziparc = "$path_date.zip";
     my $zipcommand = "cd $path;/usr/bin/zip -9 -y -r -q $ziparc *;/bin/mv $ziparc ../;"; #/bin/rm -rf $path";
     $runzip = `$zipcommand` if (-e $path);
-    $datalinks = "$downloadclick <a href=\"/tmp/$ziparc\">zipfile $topic_name</a><br>";
+    $datalinks = "$downloadclick <a href=\"$drupal_files/$ziparc\">zipfile $topic_name</a><br>";
     $datalinks = '' unless (keys %data);
 
     $downloadclick = $downloadpage1 unless (keys %data);
