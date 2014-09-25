@@ -99,6 +99,7 @@ if ($uri=~/^.+?\?(.+)$/)
    $uricom = $1;
 }
 $lang = 'en';
+$lang = 'ru';
 if ($uri=~/\/ru\//i)
 {
    $lang = 'ru';
@@ -173,9 +174,22 @@ sub readtopics
     $yquery = "select year_id from datasets.years order by year_id asc";
     my $sth = $dbh->prepare("$yquery");
     $sth->execute();
+    my $yearslist;
     while (my $year_id = $sth->fetchrow_array())
     {
 	push(@years, $year_id); 
+	$yearslist.="'$year_id', ";
+    }
+    $yearslist=~s/\,\s+$//g;
+
+    $sqlquery = "select year, datatype, count(*) as count from russianrepository where year in ($yearslist) group by year, datatype";
+    my $sth = $dbh->prepare("$sqlquery");
+    $sth->execute();
+
+    while (my ($year_id, $datafloat, $count) = $sth->fetchrow_array())
+    {
+	my $thisdatatype = sprintf("%.02f", $datafloat);
+	$active{$year_id}{$thisdatatype} = $count;
     }
 
     $histclass_root = '0' unless ($histclass_root);
@@ -186,12 +200,8 @@ sub readtopics
     $sqlquery.=" order by datatype asc";
     print "$sqlquery\n" if ($DEBUG);
 
-    #@years = (1795, 1858, 1897, 1959, 2002);
-    $thisyear = "1897";
-    $active{$thisyear}++;
-    $active{"2002"}++;
     my %nohtml;
-    foreach $thisyear (sort keys %active)
+    foreach $thisyear (@years) #sort keys %active)
     {
         my $sth = $dbh->prepare("$sqlquery");
         $sth->execute();
@@ -200,7 +210,7 @@ sub readtopics
         {
 	    %selectedyears = %{$activeyearsdict{$datatype}} if ($activeyearsdict{$datatype});
 	    %selectedyears = %active unless (keys %selectedyears);
-	    if ($selectedyears{$thisyear}) 
+	    if ($selectedyears{$thisyear}) # && $active{$thisyear}{$datatype}) 
 	    {
 	    my $topicdata;
 	    $topic_name = $topic_name_rus if ($lang eq 'ru');
@@ -261,7 +271,7 @@ sub readtopics
 		$OPENTOPIC++;
 	        foreach $year (@years)
 	        {
-		if ($selectedyears{$year})
+		if ($selectedyears{$year} && $active{$year}{$datatype})
 		{
 		     # Showyear management 
 		     my $showyear = "<img width=20 height=20 src=\"$imgpath/$checkicon\">";
