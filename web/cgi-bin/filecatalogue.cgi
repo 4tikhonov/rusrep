@@ -10,8 +10,6 @@ use utf8;
 use Encode;
 use DB_File;
 use DBI;
-#use ClioInfra;
-#use ClioTemplates;
 use Configme;
 $| = 1;
 
@@ -67,6 +65,7 @@ my $result = GetOptions(
     'command=s' => \$command,
     'uri=s' => \$uri,
     'download=s' => \$download,
+    'lang=s' => \$lang,
     'debug=s' => \$debug
 );
 
@@ -98,8 +97,7 @@ if ($uri=~/^.+?\?(.+)$/)
 {
    $uricom = $1;
 }
-$lang = 'en';
-$lang = 'ru';
+$lang = 'en' unless ($lang);
 if ($uri=~/\/ru\//i)
 {
    $lang = 'ru';
